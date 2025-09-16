@@ -71,7 +71,7 @@ public class AlbumCollection implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public void onCreate(FragmentActivity activity, AlbumCallbacks callbacks) {
         mContext = new WeakReference<Context>(activity);
-        mLoaderManager = activity.getSupportLoaderManager();
+        mLoaderManager = LoaderManager.getInstance(activity);
         mCallbacks = callbacks;
     }
 

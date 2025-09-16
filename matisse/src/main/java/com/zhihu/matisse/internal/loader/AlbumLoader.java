@@ -24,6 +24,7 @@ import android.database.MergeCursor;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import androidx.loader.content.CursorLoader;
 
@@ -41,8 +42,8 @@ import java.util.Set;
  */
 public class AlbumLoader extends CursorLoader {
 
-    private static final String COLUMN_BUCKET_ID = "bucket_id";
-    private static final String COLUMN_BUCKET_DISPLAY_NAME = "bucket_display_name";
+    private static final String COLUMN_BUCKET_ID = MediaStore.Files.FileColumns.BUCKET_ID;
+    private static final String COLUMN_BUCKET_DISPLAY_NAME = MediaStore.Files.FileColumns.BUCKET_DISPLAY_NAME;
     public static final String COLUMN_URI = "uri";
     public static final String COLUMN_COUNT = "count";
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
@@ -116,7 +117,7 @@ public class AlbumLoader extends CursorLoader {
     }
     // =============================================
 
-    private static final String BUCKET_ORDER_BY = "datetaken DESC";
+    private static final String BUCKET_ORDER_BY =  MediaStore.MediaColumns.DATE_ADDED + " DESC";
 
     private AlbumLoader(Context context, String selection, String[] selectionArgs) {
         super(
@@ -282,6 +283,7 @@ public class AlbumLoader extends CursorLoader {
     @Override
     public void onContentChanged() {
         // FIXME a dirty way to fix loading multiple times
+        Log.e("albumloader","onContentChanged");
     }
 
     /**
