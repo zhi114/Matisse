@@ -22,6 +22,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,11 +37,16 @@ import com.zhihu.matisse.internal.model.AlbumMediaCollection;
 import com.zhihu.matisse.internal.model.SelectedItemCollection;
 import com.zhihu.matisse.internal.ui.adapter.AlbumMediaAdapter;
 import com.zhihu.matisse.internal.ui.widget.MediaGridInset;
+import com.zhihu.matisse.internal.utils.LoaderIdUtils;
 import com.zhihu.matisse.internal.utils.UIUtils;
+
+import java.util.zip.CRC32;
 
 public class MediaSelectionFragment extends Fragment implements
         AlbumMediaCollection.AlbumMediaCallbacks, AlbumMediaAdapter.CheckStateListener,
         AlbumMediaAdapter.OnMediaClickListener {
+
+    private static final String TAG = "Matisse";
 
     public static final String EXTRA_ALBUM = "extra_album";
 
@@ -109,7 +117,9 @@ public class MediaSelectionFragment extends Fragment implements
         int spacing = getResources().getDimensionPixelSize(R.dimen.media_grid_spacing);
         mRecyclerView.addItemDecoration(new MediaGridInset(spanCount, spacing, false));
         mRecyclerView.setAdapter(mAdapter);
-        mAlbumMediaCollection.onCreate(getActivity(), this);
+        int loaderId = LoaderIdUtils.stringToInt(album.getId());
+
+        mAlbumMediaCollection.onCreate(getActivity(), loaderId,this);
         mAlbumMediaCollection.load(album, selectionSpec.capture);
     }
 

@@ -19,6 +19,8 @@ package com.zhihu.matisse.internal.model;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
@@ -31,12 +33,15 @@ import com.zhihu.matisse.internal.loader.AlbumMediaLoader;
 import java.lang.ref.WeakReference;
 
 public class AlbumMediaCollection implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final int LOADER_ID = 2;
+
+    //private static final int LOADER_ID = 2;
     private static final String ARGS_ALBUM = "args_album";
     private static final String ARGS_ENABLE_CAPTURE = "args_enable_capture";
     private WeakReference<Context> mContext;
     private LoaderManager mLoaderManager;
     private AlbumMediaCallbacks mCallbacks;
+
+    private int mLoaderId = 0;
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -74,7 +79,8 @@ public class AlbumMediaCollection implements LoaderManager.LoaderCallbacks<Curso
         mCallbacks.onAlbumMediaReset();
     }
 
-    public void onCreate(@NonNull FragmentActivity context, @NonNull AlbumMediaCallbacks callbacks) {
+    public void onCreate(@NonNull FragmentActivity context, int loaderId,@NonNull AlbumMediaCallbacks callbacks) {
+        mLoaderId = loaderId;
         mContext = new WeakReference<Context>(context);
         mLoaderManager = LoaderManager.getInstance(context);
         mCallbacks = callbacks;
@@ -82,7 +88,7 @@ public class AlbumMediaCollection implements LoaderManager.LoaderCallbacks<Curso
 
     public void onDestroy() {
         if (mLoaderManager != null) {
-            mLoaderManager.destroyLoader(LOADER_ID);
+            mLoaderManager.destroyLoader(mLoaderId);
         }
         mCallbacks = null;
     }
@@ -95,7 +101,7 @@ public class AlbumMediaCollection implements LoaderManager.LoaderCallbacks<Curso
         Bundle args = new Bundle();
         args.putParcelable(ARGS_ALBUM, target);
         args.putBoolean(ARGS_ENABLE_CAPTURE, enableCapture);
-        mLoaderManager.initLoader(LOADER_ID, args, this);
+        mLoaderManager.initLoader(mLoaderId, args, this);
     }
 
     public interface AlbumMediaCallbacks {
